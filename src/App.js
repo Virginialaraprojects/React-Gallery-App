@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import './App.css';
 import axios from 'axios';
-import apiKey from '../../Config';
+import SearchForm from './Components/SearchForm';
+import Nav from './Components/Nav';
+import PhotoList from './Components/PhotoList';
+
+import './App.css';
+import apiKey from '../src/config';
+
 
 class App extends Component {
 
@@ -14,10 +19,10 @@ componentDidMount(){
 
 //function to search data on app
 performSearch=(query = 'sunsets') =>{
-  axios.get('https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags={query}&per_page=24&format=json&nojsoncallback=1')
+  axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
   .then(response => {
     this.setState({
-      photos:response.data.data
+      photos:response.data.data,
       loading:false
     });
 
