@@ -1,21 +1,33 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {
+  BrowserRouter,
+  Route
+} from 'react-router-dom'
+//App components
 import SearchForm from './Components/SearchForm';
 import Nav from './Components/Nav';
 import PhotoList from './Components/PhotoList';
+//import NotFound from './Components/NotFound';
 
 import './App.css';
 import apiKey from '../src/config';
 
 
-class App extends Component {
+export default class App extends Component {
+
+  constructor(){
+    super();
+    this.state ={
+      photos:[],
+      loading: true
+    }
+  }
 
 // to have photos display before the search
 componentDidMount(){
   this.performSearch();
 }
-
-
 
 //function to search data on app
 performSearch=(query = 'sunsets') =>{
@@ -25,7 +37,6 @@ performSearch=(query = 'sunsets') =>{
       photos:response.data.data,
       loading:false
     });
-
   })
   .catch(error => {
     console.log('Error fetching and parsing data', error);
@@ -34,13 +45,21 @@ performSearch=(query = 'sunsets') =>{
 
 render(){
   return (
-    <div className="container">
-        <SearchForm onSearch = {this.performSearch}/>
+    <BrowserRouter>
+      <div className="container">
+        <SearchForm 
+          onSearch = {this.performSearch}/>
         <Nav />
-        <PhotoList data = {this.state.photos}/>
+        {
+          (this.state.loading)
+          ?<p> Loading...</p>
+          :<PhotoList data = {this.state.photos}/>
+        }
+        <Route exact path="/" render ={()=> <PhotoList />} />
+        <Route path="/searchform" render ={()=> <SearchForm />} />
       </div>
+    </BrowserRouter>
   );
-}
+ }
 }
 
-export default App;
