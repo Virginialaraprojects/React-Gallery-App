@@ -5,7 +5,16 @@ import apiKey from '../../Config';
 
 class App extends Component {
 
-  axios.get('https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=sunsets&per_page=24&format=json&nojsoncallback=1')
+// to have photos display before the search
+componentDidMount(){
+  this.performSearch();
+}
+
+
+
+//function to search data on app
+performSearch=(query = 'sunsets') =>{
+  axios.get('https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags={query}&per_page=24&format=json&nojsoncallback=1')
   .then(response => {
     this.setState({
       photos:response.data.data
@@ -16,13 +25,14 @@ class App extends Component {
   .catch(error => {
     console.log('Error fetching and parsing data', error);
   });
-
+}
 
 render(){
   return (
     <div className="container">
-        <SearchForm/>
+        <SearchForm onSearch = {this.performSearch}/>
         <Nav />
+        <PhotoList data = {this.state.photos}/>
       </div>
   );
 }

@@ -6,7 +6,8 @@ const PhotoList = props=>{
     const results=props.data;
     let photos;
     if( results.length>0){
-        let photos= results.map((photo)=>url={photo.images.fixed_height.url} key={photo.id})
+        let photos= results.map((photo)=><Photo url={photo.images.fixed_height.url} key={photo.id} />
+        );
     }else{
         photos=<NotFound />
     }

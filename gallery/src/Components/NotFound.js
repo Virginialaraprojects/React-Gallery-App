@@ -1,4 +1,6 @@
 import React from 'react';
+import Photo from './Photo';
+import PhotoList from './Photolist';
 
 const NotFound= props =>(
     <li class="not-found">
