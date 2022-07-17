@@ -2,24 +2,28 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {
   BrowserRouter,
-  Route
+  Route,
+  Switch
 } from 'react-router-dom'
 //App components
 import SearchForm from './Components/SearchForm';
 import Nav from './Components/Nav';
 import PhotoList from './Components/PhotoList';
-//import NotFound from './Components/NotFound';
+import NotFound from './Components/NotFound';
 
 import './App.css';
 import apiKey from '../src/config';
 
 
 export default class App extends Component {
-
   constructor(){
     super();
     this.state ={
-      photos:[],
+      photo:[],
+      sunset:[],
+      butterfly:[],
+      paradise:[],
+      query:'',
       loading: true
     }
   }
@@ -27,39 +31,60 @@ export default class App extends Component {
 // to have photos display before the search
 componentDidMount(){
   this.performSearch();
+  this.performSearch('sunset');
+  this.performSearch('butterfly');
+  this.performSearch('paradise');
+  
 }
 
 //function to search data on app
-performSearch=(query = 'sunsets') =>{
-  axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
-  .then(response => {
+performSearch=(query = 'flowers') =>{
+  axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&extras=url_c&per_page=24&format=json&nojsoncallback=1`)
+  .then((response) => {
+    if ( query === 'sunset'){
+      this.setState({sunset:response.data.photos.photo});
+    }else if ( query === 'butterfly'){
+      this.setState({butterfly:response.data.photos.photo});
+    }else if ( query === 'paradise'){
+      this.setState({paradise:response.data.photos.photo});
+    } else {
+      this.setState({query:query});
+      this.setState({photo:response.data.photos.photo});
+    }
     this.setState({
-      photos:response.data.data,
       loading:false
     });
+    
   })
   .catch(error => {
     console.log('Error fetching and parsing data', error);
   });
 }
 
-render(){
+
+
+render() {
+  console.log(this.state.photos)
   return (
+  
     <BrowserRouter>
       <div className="container">
         <SearchForm 
           onSearch = {this.performSearch}/>
-        <Nav />
-        {
-          (this.state.loading)
-          ?<p> Loading...</p>
-          :<PhotoList data = {this.state.photos}/>
-        }
-        <Route exact path="/" render ={()=> <PhotoList />} />
-        <Route path="/searchform" render ={()=> <SearchForm />} />
+        <Nav 
+        onClick={this.performSearch}/>
+        
+        <Switch>
+          <Route path="/:query" render ={()=>(<div className="photo-container"> <PhotoList data={this.state.photo} topic={this.state.query} /> </div> )} />
+          <Route exact path="/" render ={()=> <PhotoList data={this.state.photo} topic={'Flowers'} />} />
+          <Route exact path="/sunset" render ={()=> <PhotoList data={this.state.sunset} loading={this.state.loading}topic={'Sunset'}/>} />
+          <Route exact path="/butterfly" render ={()=> <PhotoList data={this.state.butterfly} topic={'Butterfly'} />} />
+          <Route exact path="/paradise" render ={()=> <PhotoList data={this.state.paradise} topic={'Paradise'} />} />
+          <Route component={ NotFound } />
+        </Switch>
       </div>
     </BrowserRouter>
   );
  }
-}
+};
 

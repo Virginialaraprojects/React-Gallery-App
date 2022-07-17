@@ -5,18 +5,18 @@ import NotFound from './NotFound';
 const PhotoList = (props)=>{
     const results=props.data;
     let photos;
-    if(results.length >0 ){
-        photos= results.map((photo)=> <Photo url={photo.url_c} key={photo.id} />);
+    if(results.length > 0 ){
+        photos= results.map((photo)=>
+         <Photo url={photo.url_c} key={photo.id} title={photo.title} />);
     }else{
         photos=<NotFound />
     }
 
     return(
-        <div class="photo-container">
-        <h2>Results</h2>
-        <ul>{photos}
-        </ul>
-        </div>
+        <div className="photo-container">
+        <h2>{`${props.topic} Images`}</h2>
+        <ul>{photos}</ul>
+          </div>
     );
 }
 
