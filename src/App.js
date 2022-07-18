@@ -75,11 +75,11 @@ render() {
         onClick={this.performSearch}/>
         
         <Switch>
-          <Route path="/:query" render ={()=>(<div className="photo-container"> <PhotoList data={this.state.photo} topic={this.state.query} /> </div> )} />
           <Route exact path="/" render ={()=> <PhotoList data={this.state.photo} topic={'Flowers'} />} />
           <Route exact path="/sunset" render ={()=> <PhotoList data={this.state.sunset} loading={this.state.loading}topic={'Sunset'}/>} />
           <Route exact path="/butterfly" render ={()=> <PhotoList data={this.state.butterfly} topic={'Butterfly'} />} />
           <Route exact path="/paradise" render ={()=> <PhotoList data={this.state.paradise} topic={'Paradise'} />} />
+          <Route path="/:query" render ={()=>(<div className="photo-container"> <PhotoList data={this.state.photo} topic={this.state.query} /> </div> )} />
           <Route component={ NotFound } />
         </Switch>
       </div>
